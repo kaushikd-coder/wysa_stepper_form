@@ -121,7 +121,7 @@ Base URL: `http://localhost:5000/api`
 | PATCH | `/submissions/:id/draft` | Save draft progress |
 | POST | `/submissions/:id/complete` | Complete submission |
 
-For request bodies, sample payloads, and Postman flow, see **[backend/API_DOCS.txt](backend/API_DOCS.txt)**.
+For request bodies, sample payloads, and Postman flow, see **[API_DOCS.txt](API_DOCS.txt)**.
 
 ### User identity
 
