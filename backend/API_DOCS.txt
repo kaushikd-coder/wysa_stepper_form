@@ -1,0 +1,165 @@
+WYSA Stepper Form - Backend API Notes
+======================================
+
+Quick reference for running and testing the backend (Postman friendly).
+
+
+SETUP
+-----
+1. Copy .env.example to .env and add your MongoDB Atlas URI.
+2. npm install
+3. npm run dev
+
+Server runs on http://localhost:5000
+On startup it connects to MongoDB and seeds the "Wellness Intake" form (3 steps) if missing.
+
+Other scripts:
+  npm run seed   - manually seed form config
+  npm run build  - compile TypeScript
+  npm start      - run compiled build from dist/
+
+
+AUTH
+----
+No real auth for this assignment. User is assumed logged in.
+
+Default user id: demo-user
+
+You can pass a different user via:
+  Header: X-User-Id: your-user-id
+  or query: ?userId=your-user-id
+
+
+BASE URL
+--------
+/api
+
+
+ENDPOINTS
+---------
+
+GET /health
+  Simple check. Returns { "status": "ok" }
+
+
+GET /api/form-configs
+  Lists active form configs (id, title, slug, step count)
+
+
+GET /api/form-configs/:id
+  Full form config with all steps and fields.
+  Use this to render the stepper on frontend.
+
+
+GET /api/submissions
+  Lists submissions for the current user.
+  Returns title, status (draft/completed), and progress (completedSteps / totalSteps).
+
+
+POST /api/submissions
+  Creates a new draft submission.
+
+  Body:
+  {
+    "formConfigId": "<form config id from list endpoint>"
+  }
+
+
+GET /api/submissions/:id
+  Gets one submission with answers and progress.
+
+
+PATCH /api/submissions/:id/draft
+  Saves partial progress. Use this when user clicks Save or Save and Next.
+
+  Body:
+  {
+    "currentStepIndex": 1,
+    "completedStepIds": ["personal-details"],
+    "answers": {
+      "fullName": "John Doe",
+      "age": "28"
+    }
+  }
+
+  Notes:
+  - answers get merged with existing ones, not replaced entirely
+  - only fields you send get validated (draft can be incomplete)
+  - invalid values still get rejected (bad age, wrong radio option, etc.)
+
+
+POST /api/submissions/:id/complete
+  Final submit. All required fields must be valid.
+
+  Body:
+  {
+    "answers": {
+      "fullName": "John Doe",
+      "age": "28",
+      "preferredSupportType": "self-guided",
+      "preferredContactMethod": "email",
+      "primaryGoals": "sleep-better",
+      "preferredTime": "evening"
+    }
+  }
+
+
+POSTMAN FLOW (recommended order)
+--------------------------------
+1. GET  /api/form-configs          -> copy form id
+2. GET  /api/form-configs/:id      -> see steps/fields
+3. POST /api/submissions           -> copy submission id
+4. PATCH /api/submissions/:id/draft (repeat as user fills steps)
+5. POST /api/submissions/:id/complete
+6. GET  /api/submissions           -> confirm status + progress
+
+
+WELLNESS INTAKE FORM (seeded config)
+------------------------------------
+Step 1 - Personal Details
+  fullName (text, required)
+  age (text, required, numeric 1-120)
+
+Step 2 - Wellness Preferences
+  primaryGoals (select, optional)
+  preferredSupportType (radio, required)
+  notes (text, optional)
+
+Step 3 - Availability
+  preferredTime (select, optional)
+  preferredContactMethod (radio, required)
+  additionalDetails (text, optional)
+
+
+RESPONSE FORMAT
+---------------
+Success:
+{
+  "success": true,
+  "data": { ... }
+}
+
+Error:
+{
+  "success": false,
+  "message": "what went wrong",
+  "details": { ... }   // optional, usually validation field errors
+}
+
+
+COMMON STATUS CODES
+-------------------
+200 - OK
+201 - Created (new submission)
+400 - Bad request (invalid id, malformed input)
+404 - Not found
+409 - Conflict (e.g. editing a completed submission)
+422 - Validation failed
+500 - Server error
+
+
+FIELD TYPES SUPPORTED
+---------------------
+text   - string with optional min/max length or numeric min/max
+select - must match one of the option values
+radio  - same as select, single value only
