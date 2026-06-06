@@ -70,13 +70,7 @@ cd backend
 npm install
 ```
 
-Create a `.env` file from the example:
-
-```bash
-cp .env.example .env
-```
-
-Update `.env` with your MongoDB connection string:
+Create a `.env` file in the backend folder:
 
 ```env
 PORT=5000
