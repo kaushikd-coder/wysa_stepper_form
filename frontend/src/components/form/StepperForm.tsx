@@ -39,11 +39,13 @@ type PendingAction =
   | { type: "leave" }
   | { type: "step"; stepIndex: number };
 
+type SavingAction = "save" | "saveAndNext" | "submit";
+
 export function StepperForm({ submissionId }: StepperFormProps) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [savingAction, setSavingAction] = useState<SavingAction | null>(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -234,7 +236,7 @@ export function StepperForm({ submissionId }: StepperFormProps) {
     }
 
     try {
-      setSaving(true);
+      setSavingAction("save");
       setError("");
       setSuccess("");
 
@@ -244,7 +246,7 @@ export function StepperForm({ submissionId }: StepperFormProps) {
     } catch (saveError) {
       setError(getApiErrorMessage(saveError));
     } finally {
-      setSaving(false);
+      setSavingAction(null);
     }
   };
 
@@ -261,7 +263,7 @@ export function StepperForm({ submissionId }: StepperFormProps) {
     }
 
     try {
-      setSaving(true);
+      setSavingAction("saveAndNext");
       setError("");
       setSuccess("");
 
@@ -272,7 +274,7 @@ export function StepperForm({ submissionId }: StepperFormProps) {
     } catch (saveError) {
       setError(getApiErrorMessage(saveError));
     } finally {
-      setSaving(false);
+      setSavingAction(null);
     }
   };
 
@@ -290,7 +292,7 @@ export function StepperForm({ submissionId }: StepperFormProps) {
     }
 
     try {
-      setSaving(true);
+      setSavingAction("submit");
       setError("");
       setSuccess("");
 
@@ -301,7 +303,7 @@ export function StepperForm({ submissionId }: StepperFormProps) {
     } catch (submitError) {
       setError(getApiErrorMessage(submitError));
     } finally {
-      setSaving(false);
+      setSavingAction(null);
     }
   };
 
@@ -407,7 +409,7 @@ export function StepperForm({ submissionId }: StepperFormProps) {
             <Button
               variant="outline"
               onClick={() => handleStepClick(currentStepIndex - 1)}
-              disabled={currentStepIndex === 0 || saving}
+              disabled={currentStepIndex === 0 || savingAction !== null}
               className="w-full sm:w-auto"
             >
               Back
@@ -417,27 +419,27 @@ export function StepperForm({ submissionId }: StepperFormProps) {
               <Button
                 variant="outline"
                 onClick={handleSave}
-                disabled={saving}
+                disabled={savingAction !== null}
                 className="w-full sm:w-auto"
               >
-                Save
+                {savingAction === "save" ? "Saving..." : "Save"}
               </Button>
 
               {isLastStep ? (
                 <Button
                   onClick={handleSubmit}
-                  disabled={saving}
+                  disabled={savingAction !== null}
                   className="w-full sm:w-auto"
                 >
-                  {saving ? "Submitting..." : "Submit"}
+                  {savingAction === "submit" ? "Submitting..." : "Submit"}
                 </Button>
               ) : (
                 <Button
                   onClick={handleSaveAndNext}
-                  disabled={saving}
+                  disabled={savingAction !== null}
                   className="w-full sm:w-auto"
                 >
-                  {saving ? "Saving..." : "Save and Next"}
+                  {savingAction === "saveAndNext" ? "Saving..." : "Save and Next"}
                 </Button>
               )}
             </div>
