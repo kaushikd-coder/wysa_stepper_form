@@ -52,7 +52,7 @@ frontend/
 ├── docs/
 │   └── AI_USAGE.md
 ├── APP_DOCS.txt                    # App flow & feature reference
-├── .env.example
+├── .env.local                  # Local env (not committed)
 └── package.json
 ```
 
@@ -72,13 +72,7 @@ cd frontend
 npm install
 ```
 
-Create `.env.local` from the example:
-
-```bash
-cp .env.example .env.local
-```
-
-Default values:
+Create `.env.local` in the frontend folder:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000
