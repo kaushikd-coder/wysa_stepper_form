@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   completeSubmission,
   createSubmission,
+  deleteSubmission,
   getSubmission,
   listSubmissions,
   saveDraft,
@@ -19,6 +20,7 @@ const router = Router();
 router.get("/", listSubmissions);
 router.post("/", validateBody(createSubmissionSchema), createSubmission);
 router.get("/:id", validateParams(objectIdParamSchema), getSubmission);
+router.delete("/:id", validateParams(objectIdParamSchema), deleteSubmission);
 router.patch(
   "/:id/draft",
   validateParams(objectIdParamSchema),

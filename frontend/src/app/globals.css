@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --background: #eef7f6;
+  --foreground: #0f172a;
+  --primary: #0d9488;
+  --primary-dark: #0f766e;
+  --primary-light: #5eead4;
+  --primary-foreground: #ffffff;
+  --border: #cbd5e1;
+  --muted: #64748b;
+  --card: #ffffff;
+  --accent: #14b8a6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: linear-gradient(160deg, #e0f2f1 0%, #f0fdfa 35%, #f8fafc 100%);
+  min-height: 100vh;
+}
+
+.page-shell {
+  min-height: 100vh;
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%);
+}
+
+.card-surface {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 4px 6px -1px rgba(13, 148, 136, 0.08),
+    0 10px 24px -4px rgba(15, 118, 110, 0.12);
+}
+
+.form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 8px 30px -6px rgba(13, 148, 136, 0.15),
+    0 4px 12px -2px rgba(0, 0, 0, 0.06);
+}

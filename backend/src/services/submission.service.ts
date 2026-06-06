@@ -208,3 +208,11 @@ export const completeSubmission = async (
 
   return formatSubmission(submission, sortedSteps.length);
 };
+
+export const deleteSubmission = async (
+  id: string,
+  userId: string = DEFAULT_USER_ID
+): Promise<void> => {
+  const submission = await getSubmissionOrThrow(id, userId);
+  await submission.deleteOne();
+};

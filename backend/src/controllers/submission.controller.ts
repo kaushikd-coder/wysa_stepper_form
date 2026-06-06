@@ -73,3 +73,17 @@ export const completeSubmission = asyncHandler(
     });
   }
 );
+
+export const deleteSubmission = asyncHandler(
+  async (req: Request, res: Response) => {
+    await submissionService.deleteSubmission(
+      String(req.params.id),
+      getUserId(req)
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Submission deleted",
+    });
+  }
+);

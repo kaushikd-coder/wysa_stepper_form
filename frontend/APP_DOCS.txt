@@ -1,0 +1,117 @@
+WYSA Stepper Form - Frontend App Notes
+======================================
+
+Quick reference for pages, user flows, and UI behaviour.
+
+
+SETUP
+-----
+1. Make sure backend is running on http://localhost:5000
+2. Copy .env.example to .env.local
+3. npm install
+4. npm run dev
+
+App runs on http://localhost:3000
+
+
+ENV
+---
+NEXT_PUBLIC_API_URL=http://localhost:5000
+NEXT_PUBLIC_USER_ID=demo-user
+
+The user id is sent as X-User-Id header on every API request.
+
+
+PAGES
+-----
+
+/  (Home)
+  - Lists all submissions (title, status, progress bar)
+  - "New Wellness Intake" button creates a new draft and opens the form
+  - Trash icon deletes a submission (with confirm dialog)
+
+/form/[id]
+  - Multi-step Wellness Intake form
+  - Loads submission answers + form config from backend
+  - Back link returns to home
+
+
+FORM FLOW
+---------
+
+Step 1 - Personal Details
+  fullName (text, required)
+  age (text, required)
+
+Step 2 - Wellness Preferences
+  primaryGoals (select, optional)
+  preferredSupportType (radio, required)
+  notes (text, optional)
+
+Step 3 - Availability
+  preferredTime (select, optional)
+  preferredContactMethod (radio, required)
+  additionalDetails (text, optional)
+
+
+BUTTONS
+-------
+Back          - Go to previous step (only enabled after step 1)
+Save          - Save current answers as draft without moving step
+Save and Next - Validate current step, save draft, move to next step
+Submit        - Final step only. Validates all steps, completes submission
+
+
+STEP TAB RULES
+--------------
+- You can only click tabs for steps you have already reached
+- Forward tabs stay grey/disabled until you use Save and Next
+- Once you reach step 2, step 1 tab becomes clickable to go back
+- Completed forms: all tabs open (read-only)
+
+
+VALIDATION
+----------
+- Client validates before Save and Next and Submit
+- Required fields show error messages under the field
+- Server also validates on draft save and complete (errors shown in banner)
+
+
+UNSAVED CHANGES
+---------------
+- Amber banner shows when you edit fields without saving
+- Navigating away (tab click, back link, close X) shows confirm dialog
+- "Leave without saving" discards local edits and restores last saved data
+- Browser refresh/tab close also warns if unsaved
+
+
+DELETE
+------
+- Trash icon on home page submission card
+- Confirm dialog before delete
+- Calls DELETE /api/submissions/:id
+
+
+LOADING
+-------
+- Skeleton loaders shown while submissions list or form data loads
+- Matches the layout of the actual UI (cards, form shell)
+
+
+RESPONSIVE
+----------
+- Mobile: stacked header, full-width buttons, smaller step tabs
+- Desktop: side-by-side header, inline footer buttons
+- Shared PAGE_CONTAINER keeps header, button, and card edges aligned
+
+
+FOLDER MAP (main files)
+-----------------------
+src/app/page.tsx                  - Home page
+src/app/form/[id]/page.tsx        - Form page
+src/components/form/StepperForm.tsx   - Main form logic
+src/components/form/DynamicField.tsx  - Text / select / radio fields
+src/services/submissions.ts       - All API calls
+src/lib/formUtils.ts              - Validation helpers
+
+For backend API details see ../backend/API_DOCS.txt
